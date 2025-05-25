@@ -26,3 +26,48 @@ replay_pid*
 /target
 target/
 /target/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Angular
+dist/
+out-tsc/
+.angular/
+
+# Compilação e cache
+tmp/
+temp/
+.cache/
+.husky/_/
+
+# Ambiente
+.env
+.env.*
+
+# IDEs/editores
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Testes
+coverage/
+karma-coverage/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Git
+*.orig
+
+# Optional: se usar Tailwind ou SCSS/Lint
+stylelintcache
+
