@@ -1,0 +1,22 @@
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
+    <li class="mat-tree-node">
+      <button mat-icon-button matTreeNodeToggle>
+        <mat-icon>
+          {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+        </mat-icon>
+      </button>
+      📁 {{ node.nome }} ({{ node.tamanho }} bytes)
+    </li>
+    <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
+      <ng-container matTreeNodeOutlet></ng-container>
+    </ul>
+  </mat-tree-node>
+
+  <mat-tree-node *matTreeNodeDef="let node">
+    <li class="mat-tree-node">
+      <button mat-icon-button disabled></button>
+      📄 {{ node.nome }} ({{ node.tamanho }} bytes)
+    </li>
+  </mat-tree-node>
+</mat-tree>
