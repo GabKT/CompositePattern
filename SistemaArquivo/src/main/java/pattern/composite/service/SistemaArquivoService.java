@@ -51,6 +51,11 @@ public class SistemaArquivoService {
 
         if (origemOpt.isPresent() && destinoOpt.isPresent() && destinoOpt.get() instanceof Pasta destino) {
             Componente origem = origemOpt.get();
+
+            if (isSubdiretorio(origem, destino)) {
+                return false;
+            }
+
             if (origem.obterComponentePai() instanceof Pasta pastaAntiga)
                 pastaAntiga.removerComponente(origem);
 
@@ -73,5 +78,16 @@ public class SistemaArquivoService {
         Optional<Componente> alvo = buscarPorCaminho(caminho);
         alvo.ifPresent(c -> c.renomear(novoNome));
         return alvo.isPresent();
+    }
+
+    private boolean isSubdiretorio(Componente origem, Componente destino) {
+        if (!(origem instanceof Pasta)) return false;
+
+        Componente atual = destino;
+        while (atual != null) {
+            if (atual == origem) return true;
+            atual = atual.obterComponentePai();
+        }
+        return false;
     }
 }
