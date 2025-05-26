@@ -1,22 +1,35 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
-    <li class="mat-tree-node">
-      <button mat-icon-button matTreeNodeToggle>
-        <mat-icon>
-          {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-        </mat-icon>
-      </button>
-      📁 {{ node.nome }} ({{ node.tamanho }} bytes)
-    </li>
-    <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
-      <ng-container matTreeNodeOutlet></ng-container>
-    </ul>
+<mat-toolbar>
+  <span>Sistema de Arquivo</span>
+  <span class="example-spacer"></span>
+  <button mat-icon-button aria-label="Example icon-button">
+    <mat-icon>add</mat-icon>
+  </button>
+  
+</mat-toolbar>
+<hr>
+<mat-tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor" #tree class="example-tree">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <span *ngIf="node.tipo === 'arquivo'">📄</span> <span *ngIf="node.tipo === 'pasta'">📁</span> {{ node.nome }} ({{ node.tamanho }} KB) 
+    <button mat-icon-button aria-label="Example icon-button">
+      <mat-icon>delete</mat-icon>
+    </button> 
   </mat-tree-node>
 
-  <mat-tree-node *matTreeNodeDef="let node">
-    <li class="mat-tree-node">
-      <button mat-icon-button disabled></button>
-      📄 {{ node.nome }} ({{ node.tamanho }} bytes)
-    </li>
-  </mat-tree-node>
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding
+                        [class.pasta-node]="node.tipo === 'pasta'">
+    <div class="mat-tree-node" [class.pasta-node]="node.tipo === 'pasta'">
+      <button mat-icon-button matTreeNodeToggle>
+        <mat-icon>
+          {{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+        </mat-icon>
+      </button>
+      <span *ngIf="node.tipo === 'pasta'">📁</span> {{ node.nome }} ({{ node.tamanho }} KB) 
+      <button mat-icon-button aria-label="Example icon-button">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div role="group" [class.tree-invisible]="!tree.isExpanded(node)">
+      <ng-container matTreeNodeOutlet></ng-container>
+    </div>
+  </mat-nested-tree-node>
 </mat-tree>
