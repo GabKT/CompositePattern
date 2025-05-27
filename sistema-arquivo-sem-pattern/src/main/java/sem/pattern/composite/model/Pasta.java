@@ -1,3 +1,5 @@
+package sem.pattern.composite.model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -113,5 +115,9 @@ public class Pasta {
                 subpasta.exibir(indentacao + "   ");
             }
         }
+    }
+
+    public void setNome(String novoNome) {
+        this.nome = novoNome;
     }
 }

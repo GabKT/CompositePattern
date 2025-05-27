@@ -1,3 +1,5 @@
+package sem.pattern.composite.model;
+
 import java.util.UUID;
 
 public class Arquivo {
@@ -54,5 +56,9 @@ public class Arquivo {
             pai.removerComponente(this);
             destino.adicionarComponente(this);
         }
+    }
+
+    public void setNome(String novoNome) {
+        this.nome = novoNome;
     }
 }
