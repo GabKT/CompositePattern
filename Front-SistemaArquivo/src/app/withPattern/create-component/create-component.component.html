@@ -1,0 +1,27 @@
+<div class="formSection">
+  <h2>Criar Componente</h2>
+
+  <form [formGroup]="createComponentForm" (ngSubmit)="onSubmit()">
+    <input type="hidden" formControlName="id" />
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput placeholder="Nome" formControlName="nome" type="text">
+    </mat-form-field>
+
+    <div class="form-radio">
+        <mat-radio-group [value]="selectedTipo" (change)="onTipoChange($event)">
+            <mat-radio-button value="arquivo">Arquivo</mat-radio-button>
+            <mat-radio-button value="pasta">Pasta</mat-radio-button>
+        </mat-radio-group>
+    </div>
+
+    <mat-form-field *ngIf="createComponentForm.get('tipo')?.value === 'arquivo'" class="full-width">
+      <mat-label>Tamanho</mat-label>
+      <input matInput type="number" formControlName="tamanho" (keypress)="allowOnlyNumbers($event)"
+    (paste)="blockPaste($event)"/>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" >Criar</button>
+  </form>
+</div>

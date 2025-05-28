@@ -1,0 +1,28 @@
+.tree-invisible {
+  display: none;
+}
+
+/*
+ * This padding sets alignment of the nested nodes.
+ */
+.example-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 40px;
+}
+
+.pasta-node {
+  padding-left: 40px;
+}
+
+.selected {
+  background-color: #d3e3fd;
+  border-radius: 4px;
+}
+
+mat-toolbar{
+  background-color: #4e5861;
+  color: whitesmoke;
+}
+
+.iconAdd{
+  color: whitesmoke;
+}

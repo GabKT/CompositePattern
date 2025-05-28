@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { SistemaArquivoService } from '../../service/sistema-arquivo.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateComponentComponent } from '../create-component/create-component.component';
 
 interface Componente {
   tipo: 'arquivo' | 'pasta';
@@ -17,66 +20,67 @@ interface Componente {
   selector: 'app-with-pattern',
   standalone: true,
   imports: [CommonModule,
-    MatTreeModule, MatButtonModule, MatIconModule, MatToolbarModule, 
+    MatTreeModule, MatButtonModule, MatIconModule, MatToolbarModule,
   ],
   templateUrl: './with-pattern.component.html',
   styleUrl: './with-pattern.component.css'
 })
 export class WithPatternComponent {
 
+  payload!: Componente;
+  dataSource: Componente[] = [];
+  selectedNode: any = null;
+
   childrenAccessor = (node: Componente) => node.componentes ?? [];
 
   hasChild = (_: number, node: Componente) => !!node.componentes && node.componentes.length > 0;
 
-  payload: Componente = {
-    tipo: "pasta",
-    id: "44712dac-870b-4ef6-a249-28c1bfb046a7",
-    nome: "raiz",
-    tamanho: 250,
-    componentes: [
-      {
-        tipo: "arquivo",
-        id: "1df4d07a-0b76-4e16-876e-7b84e3e63be5",
-        nome: "arquivo.txt",
-        tamanho: 150
-      },
-      {
-        tipo: "pasta",
-        id: "ec781645-9021-4c77-a622-e672229ef062",
-        nome: "secreta2",
-        tamanho: 100,
-        componentes: [
-          {
-            tipo: "arquivo",
-            id: "48fc7eb9-a0f2-482f-b567-debaf283ba33",
-            nome: "arquivoSecreto.txt",
-            tamanho: 100
-          },
-          {
-            tipo: "pasta",
-            id: "ec781645-9021-4c77-a622-e672229ef062",
-            nome: "papacapim",
-            tamanho: 100,
-            componentes: [
-              {
-                tipo: "arquivo",
-                id: "48fc7eb9-a0f2-482f-b567-debaf283ba33",
-                nome: "arquivao.txt",
-                tamanho: 100
-              },
-              {
-                tipo: "pasta",
-                id: "ec781645-9021-4c77-a622-e672229ef062",
-                nome: "axamarisca",
-                tamanho: 0,
-                componentes: []
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
+  constructor(private service: SistemaArquivoService, private cdr: ChangeDetectorRef, private dialog: MatDialog,) { }
 
-  dataSource = [this.payload];
+  ngOnInit() {
+    this.service.getRaiz().subscribe({
+      next: (data: Componente)=>{
+        this.payload = data;
+        this.dataSource = [this.payload];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.log ("Erro getRaiz", err)
+    })
+  }
+
+  onNodeClick(node: any) {
+    this.selectedNode = node;
+  }
+
+
+  isPastaSelected(): boolean {
+    return this.selectedNode?.tipo === 'pasta';
+  }
+
+
+  deletar(node: Componente) {
+    const caminho = this.service.getCaminhoCompleto(node, this.payload);
+    this.service.deletarComponente(caminho).subscribe({
+      next: () => this.ngOnInit(),
+      error: (err) => console.error("Erro ao deletar:", err)
+    });
+  }
+
+  adicionar(): void{
+    if (!this.selectedNode || this.selectedNode.tipo !== 'pasta') {
+    alert('Selecione uma pasta para adicionar o componente!');
+    return;
+    }
+    const dialogRef = this.dialog.open(CreateComponentComponent, {
+      width: '60%',
+      height: '60%',
+      data: this.service.getCaminhoCompleto(this.selectedNode, this.payload)
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        window.location.reload();
+      }
+    });
+  }
+
 }
