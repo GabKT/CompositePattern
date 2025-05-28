@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Componente } from '../../model/componente';
+import { SistemaArquivoService2 } from '../../service/sistema-arquivo.service2';
 
 @Component({
   selector: 'app-create-component',
@@ -18,13 +18,18 @@ import { Componente } from '../../model/componente';
 })
 export class CreateComponentComponent {
   createComponentForm: FormGroup;
+  private serviceSelecionado: SistemaArquivoService | SistemaArquivoService2;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public path: string,
+    public data: { path: string, usar8081: boolean },
     private formBuilder: FormBuilder, 
     private service: SistemaArquivoService,
+    private service2: SistemaArquivoService2,
     private dialogRef: MatDialogRef<CreateComponentComponent>){
+
+    this.serviceSelecionado = this.data.usar8081 ? this.service2 : this.service;
+    console.log("path: ", this.data.path)
     this.createComponentForm = this.formBuilder.group({
       tipo: [null, Validators.required],
       id: [, ],
@@ -45,7 +50,7 @@ export class CreateComponentComponent {
       ...(data.tipo === 'arquivo' ? { tamanho: data.tamanho } : { componentes: [], tamanho: 0 })
     };
 
-    this.service.adicionarComponente(this.path, componente).subscribe({
+    this.serviceSelecionado.adicionarComponente(this.data.path, componente).subscribe({
       next: () => {this.dialogRef.close(true);},
       error: (err) => console.error("Erro ao deletar:", err)
       })

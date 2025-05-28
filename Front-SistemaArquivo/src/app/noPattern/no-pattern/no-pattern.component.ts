@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Componente } from '../../model/componente';
-import { SistemaArquivoService } from '../../service/sistema-arquivo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import {MatTreeModule} from '@angular/material/tree';
@@ -8,6 +7,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { CreateComponentComponent } from '../../withPattern/create-component/create-component.component';
+import { SistemaArquivoService2 } from '../../service/sistema-arquivo.service2';
 
 @Component({
   selector: 'app-no-pattern',
@@ -17,7 +17,7 @@ import { CreateComponentComponent } from '../../withPattern/create-component/cre
 })
 export class NoPatternComponent {
 
-   payload!: Componente;
+  payload!: Componente;
   dataSource: Componente[] = [];
   selectedNode: any = null;
 
@@ -25,7 +25,7 @@ export class NoPatternComponent {
 
   hasChild = (_: number, node: Componente) => !!node.componentes && node.componentes.length > 0;
 
-  constructor(private service: SistemaArquivoService, private cdr: ChangeDetectorRef, private dialog: MatDialog,) { }
+  constructor(private service: SistemaArquivoService2, private cdr: ChangeDetectorRef, private dialog: MatDialog,) { }
 
   ngOnInit() {
     this.service.getRaiz().subscribe({
@@ -64,7 +64,10 @@ export class NoPatternComponent {
     const dialogRef = this.dialog.open(CreateComponentComponent, {
       width: '60%',
       height: '60%',
-      data: this.service.getCaminhoCompleto(this.selectedNode, this.payload)
+      data: {
+        path: this.service.getCaminhoCompleto(this.selectedNode, this.payload),
+        usar8081: true
+      }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

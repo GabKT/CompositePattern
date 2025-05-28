@@ -74,7 +74,10 @@ export class WithPatternComponent {
     const dialogRef = this.dialog.open(CreateComponentComponent, {
       width: '60%',
       height: '60%',
-      data: this.service.getCaminhoCompleto(this.selectedNode, this.payload)
+      data: {
+        path: this.service.getCaminhoCompleto(this.selectedNode, this.payload),
+        usar8081: false
+      }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
